@@ -75,10 +75,18 @@ module Celluloid
         end
 
         def wait(interest)
+          STDOUT.puts "ww"
           raise "Already waiting for #{interest.inspect}" if @interests.include?(interest)
+          STDOUT.puts "ww1"
           @interests[interest] = Task.current
+          STDOUT.puts @io.inspect
+          STDOUT.puts interest
+          STDOUT.puts "ww2"
           reregister
+          STDOUT.puts "ww3"
+          binding.pry if @io.is_a?(OpenSSL::SSL::SSLSocket)
           Task.suspend :iowait
+          STDOUT.puts "ww4"
         end
 
         def reregister
@@ -88,6 +96,8 @@ module Celluloid
           end
 
           if interests_symbol
+            STDOUT.puts "in reregister"
+            STDOUT.puts "registering #{interests_symbol}"
             @monitor = @selector.register(@io, interests_symbol)
             @monitor.value = self
           end

@@ -46,23 +46,17 @@ describe Celluloid::IO::SSLSocket do
   let(:server)     { TCPServer.new example_addr, example_ssl_port }
   let(:ssl_server) { OpenSSL::SSL::SSLServer.new server, server_context }
   let(:server_thread) do
-    STDOUT.puts "a1"
     Thread.new { ssl_server.accept }.tap do |thread|
-    STDOUT.puts "a2"
-      #Thread.pass while thread.status && thread.status != "sleep"
+      Thread.pass while thread.status && thread.status != "sleep"
       thread.join unless thread.status
-    STDOUT.puts "a3"
     end
   end
 
   let(:celluloid_server) { Celluloid::IO::TCPServer.new example_addr, example_ssl_port }
   let(:raw_server_thread) do
-    STDOUT.puts "b1"
     Thread.new { celluloid_server.accept }.tap do |thread|
-    STDOUT.puts "b2"
       #Thread.pass while thread.status && thread.status != "sleep"
       thread.join unless thread.status
-    STDOUT.puts "b3"
     end
   end
 

@@ -25,7 +25,7 @@ class ExampleActor
   end
 end
 
-EXAMPLE_PORT = 12345
+EXAMPLE_PORT = 12348
 
 def example_addr; '127.0.0.1'; end
 def example_port; EXAMPLE_PORT; end

@@ -1,0 +1,3 @@
+#rvm jruby-1.7.4@celluloid_io --create
+rvm jruby-1.7.2@celluloid_io --create
+#rvm ruby-1.9.3@celluloid_io --create
