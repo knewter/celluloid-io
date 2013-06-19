@@ -29,19 +29,12 @@ module Celluloid
     end
 
     def wait_readable(io)
-      STDOUT.puts 1
       io = io.to_io
-      STDOUT.puts 2
       if IO.evented?
-      STDOUT.puts 3
         mailbox = Thread.current[:celluloid_mailbox]
-      STDOUT.puts 4
         mailbox.reactor.wait_readable(io)
-      STDOUT.puts 5
       else
-      STDOUT.puts 6
         Kernel.select([io])
-      STDOUT.puts 7
       end
       nil
     end

@@ -7,3 +7,4 @@
 - https://github.com/celluloid/celluloid-io/commit/bd5d556ac51affeaff6a8933d01e657d8ae57b18#L0L21
 - ^ is prolly the commit that introduced this, and roughly the location...but I'll keep digging in like I am
 - so....on to Celluloid::IO.wait_readable
+- Tony says it's a JRuby bug...I could io.wait_readable(1) but I couldn't Kernel.select([io]) 
