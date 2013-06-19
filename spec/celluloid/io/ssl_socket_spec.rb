@@ -1,3 +1,4 @@
+require 'pry'
 require 'spec_helper'
 require 'openssl'
 
@@ -45,17 +46,23 @@ describe Celluloid::IO::SSLSocket do
   let(:server)     { TCPServer.new example_addr, example_ssl_port }
   let(:ssl_server) { OpenSSL::SSL::SSLServer.new server, server_context }
   let(:server_thread) do
+    STDOUT.puts "a1"
     Thread.new { ssl_server.accept }.tap do |thread|
-      Thread.pass while thread.status && thread.status != "sleep"
+    STDOUT.puts "a2"
+      #Thread.pass while thread.status && thread.status != "sleep"
       thread.join unless thread.status
+    STDOUT.puts "a3"
     end
   end
 
   let(:celluloid_server) { Celluloid::IO::TCPServer.new example_addr, example_ssl_port }
   let(:raw_server_thread) do
+    STDOUT.puts "b1"
     Thread.new { celluloid_server.accept }.tap do |thread|
-      Thread.pass while thread.status && thread.status != "sleep"
+    STDOUT.puts "b2"
+      #Thread.pass while thread.status && thread.status != "sleep"
       thread.join unless thread.status
+    STDOUT.puts "b3"
     end
   end
 
@@ -81,7 +88,6 @@ describe Celluloid::IO::SSLSocket do
     end
 
     it "starts SSL on a connected TCP socket" do
-      pending "JRuby support" if defined?(JRUBY_VERSION)
       with_raw_sockets do |client, peer|
         within_io_actor do
           peer << request
@@ -118,7 +124,6 @@ describe Celluloid::IO::SSLSocket do
     end
 
     it "starts SSL on a connected TCP socket" do
-      pending "JRuby support" if defined?(JRUBY_VERSION)
       with_raw_sockets do |client, peer|
         peer << request
         client.read(request.size).should eq(request)
@@ -143,7 +148,6 @@ describe Celluloid::IO::SSLSocket do
 
   it "knows its cert" do
     # FIXME: seems bad? o_O
-    pending "wtf is wrong with this on JRuby" if defined? JRUBY_VERSION
     with_ssl_sockets do |ssl_client|
       ssl_client.cert.to_der.should eq(client_cert.to_der)
     end
