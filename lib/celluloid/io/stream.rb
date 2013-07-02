@@ -39,7 +39,7 @@ module Celluloid
       def sysread(length = nil, buffer = nil)
         buffer ||= ''.force_encoding(Encoding::ASCII_8BIT)
 
-        @read_latch.synchronize do
+        @read_latch.synchronize('read latch') do
           begin
             read_nonblock(length, buffer)
           rescue ::IO::WaitReadable
@@ -58,7 +58,7 @@ module Celluloid
 
         remaining = string
 
-        @write_latch.synchronize do
+        @write_latch.synchronize('write latch') do
           while total_written < length
             begin
               written = write_nonblock(remaining)
@@ -374,13 +374,13 @@ module Celluloid
         end
 
         # Synchronize an operation across all tasks in the current actor
-        def synchronize
+        def synchronize(message='')
           actor = Thread.current[:celluloid_actor]
           return yield unless actor
 
           if @owner || @waiters > 0
             @waiters += 1
-            @condition.wait
+            @condition.wait(message)
             @waiters -= 1
           end
 
